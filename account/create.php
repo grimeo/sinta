@@ -1,5 +1,5 @@
 <?php
-  require("../validators/_new_user_validator.php");
+  require("../_validators/_new_user_validator.php");
   
   $errs = [];
 
