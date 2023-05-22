@@ -22,6 +22,7 @@ class NewUser{
         $this->validateAge();
         $this->validateUsername();
         $this->validateEmail();
+        $this->validatePassword();
         return array($this->userData, $this->errs);
     }
 
@@ -94,9 +95,38 @@ class NewUser{
     }
 
     private function validatePassword(){
-        $this->userData['password'] = $this->validateInput($this->userData['password']);
-        $this->userData['confirmPassword'] = $this->validateInput($this->userData['confirmPassword']);
+
+        $password = $this->userData['password'] = $this->validateInput($this->userData['password']);
+        $confirmpassword = $this->userData['confirmPassword'] = $this->validateInput($this->userData['confirmPassword']);
+        mb_strlen($password) <= 7;
+        if((($password == null || $password == '') ||
+            ($confirmpassword === null || $confirmpassword === '') ||
+            $password != $confirmpassword) || 
+            mb_strlen($password) <= 7 || 
+            mb_strlen($confirmpassword) <= 7  ||
+            mb_strlen($password) > 20 || 
+            mb_strlen($confirmpassword) >20 ){
+
+                if($password === null || $password === ''){
+                    $this->pushError('password', 'password cannot be empty');
+                }
+                if($confirmpassword == null || $confirmpassword == ''){
+                    $this->pushError('confirmPassword', 'password cannot be empty');
+                }
+                if($password != $confirmpassword){
+                    $this->pushError('password', 'incorrect password');
+                    $this->pushError('confirmPassword', 'incorrect password');
+                }
+                if(mb_strlen($password) <= 7 || mb_strlen($password) > 20){
+                    $this->pushError('password', 'password must have 8-20 characters');
+                }
+                if(mb_strlen($confirmpassword) <= 7 || mb_strlen($confirmpassword) > 20){
+                    $this->pushError('confirmPassword', 'password must have 8-20 characters');
+                }
+        }
     }
+
+        
 
     private function pushError($key, $err){
         $this->errs[$key] = $err;
